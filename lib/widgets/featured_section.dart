@@ -11,7 +11,7 @@ class FeaturedSection extends StatelessWidget {
   Future<List<Product>> fetchFeaturedProducts() async {
     try {
       final response =
-          await http.get(Uri.parse('http://localhost:3000/products'));
+          await http.get(Uri.parse('http://localhost:3000/products/images'));
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -107,7 +107,7 @@ class FeaturedSection extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Ảnh sản phẩm (giả lập hoặc từ API nếu có ảnh)
+                            // Ảnh sản phẩm sử dụng Image.network
                             Container(
                               height: 120,
                               decoration: BoxDecoration(
@@ -117,12 +117,18 @@ class FeaturedSection extends StatelessWidget {
                                 ),
                               ),
                               child: Center(
-                                child: Text(
-                                  product.name[0], // Hiển thị chữ cái đầu của tên sản phẩm
-                                  style: const TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                child: Image.network(
+                                  product.image, // Sử dụng URL ảnh từ API
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (context, child, loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    } else {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    }
+                                  },
                                 ),
                               ),
                             ),

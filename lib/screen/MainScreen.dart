@@ -57,10 +57,10 @@ class HomeScreen extends StatelessWidget {
             
             Header(),
             BannerSlider(),
-            FeaturedSection(),
-             CategoriesSection(),
-            ProductListSection(),
-             Footer(), 
+            // FeaturedSection(),
+            CategoriesSection(),
+            // ProductListSection(),
+            Footer(), 
              
           ],
         ),
