@@ -1,3 +1,4 @@
+import 'package:do_an_ban_mt/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -105,7 +106,9 @@ class RegisterScreen extends StatelessWidget {
               children: [
                 const Text('Bạn đã có tài khoản?'),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen() ));
+                  },
                   child: const Text(
                     'Đăng Nhập',
                     style: TextStyle(color: Colors.blue),

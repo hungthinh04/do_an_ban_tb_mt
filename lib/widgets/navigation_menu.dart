@@ -1,97 +1,91 @@
+import 'package:do_an_ban_mt/screen/MainScreen.dart';
+import 'package:do_an_ban_mt/screen/cart_screen.dart';
+import 'package:do_an_ban_mt/screen/categories_section.dart';
+import 'package:do_an_ban_mt/screen/notification_screen.dart';
+import 'package:do_an_ban_mt/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 
-class Header extends StatelessWidget {
-  const Header({Key? key}) : super(key: key);
+class NavigationMenu extends StatefulWidget {
+  final int initialIndex;
+
+  NavigationMenu({this.initialIndex = 0});
+
+  @override
+  _NavigationMenuState createState() => _NavigationMenuState();
+}
+
+class _NavigationMenuState extends State<NavigationMenu> {
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  void _onItemTapped(int index) {
+    if (_currentIndex != index) {
+      setState(() {
+        _currentIndex = index;
+      });
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => _getPage(index),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+  }
+
+  Widget _getPage(int index) {
+    switch (index) {
+      case 0:
+        return MainScreen();
+      case 1:
+        return CategoriesSection();
+      case 2:
+        return CartScreen();
+      case 3:
+        return NotificationsScreen();
+      case 4:
+        return ProfileScreen();
+      default:
+        return MainScreen();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // ĐĂNG KÝ | ĐĂNG NHẬP
-        Container(
-          color: Colors.blue,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text(
-                'ĐĂNG KÝ | ĐĂNG NHẬP',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Trang chủ',
         ),
-        // Logo, thanh tìm kiếm và giỏ hàng
-        Container(
-          color: Colors.grey[900],
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Logo
-                  const Text(
-                    'BETSHOP',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  // Icon giỏ hàng
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.menu, color: Colors.white),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: Stack(
-                          children: [
-                            const Icon(Icons.shopping_cart, color: Colors.orange),
-                            Positioned(
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Text(
-                                  '0',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              // Thanh tìm kiếm
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Tìm kiếm',
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ],
-          ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.grid_view),
+          label: 'Danh mục',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_cart),
+          label: 'Giỏ hàng',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.notifications),
+          label: 'Thông báo',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Cá nhân',
         ),
       ],
+      currentIndex: _currentIndex,
+      selectedItemColor: Colors.green,
+      unselectedItemColor: Colors.grey,
+      onTap: _onItemTapped,
     );
   }
 }

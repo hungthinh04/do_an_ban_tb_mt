@@ -1,3 +1,4 @@
+import 'package:do_an_ban_mt/screen/register_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -120,7 +121,9 @@ class LoginScreen extends StatelessWidget {
               children: [
                 const Text('Bạn mới sử dụng ứng dụng?'),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>RegisterScreen() ));
+                  },
                   child: const Text(
                     'Đăng Ký',
                     style: TextStyle(color: Colors.blue),
