@@ -11,13 +11,10 @@ class MainScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section
             MainHeader(),
 
-            // Banner Slider
             BannerSlider(),
 
-            // Categories Section
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(

@@ -37,6 +37,17 @@ class _NavigationMenuState extends State<NavigationMenu> {
         ),
       );
     }
+    else{
+     
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => _getPage(index),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
   }
 
   Widget _getPage(int index) {
