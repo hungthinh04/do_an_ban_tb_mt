@@ -1,5 +1,5 @@
+import 'package:do_an_ban_mt/models/product.dart';
 import 'package:flutter/material.dart';
-import '../models/product.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   final Product product;
@@ -21,6 +21,10 @@ class ProductDetailScreen extends StatelessWidget {
             Container(
               height: 200,
               width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(8.0),
+              ),
               child: product.image.isNotEmpty
                   ? Image.network(
                       product.image,
@@ -28,7 +32,7 @@ class ProductDetailScreen extends StatelessWidget {
                       errorBuilder: (context, error, stackTrace) {
                         return Center(
                           child: Text(
-                            'Image not available',
+                            'Ảnh không có sẵn',
                             style: TextStyle(color: Colors.grey),
                           ),
                         );
@@ -36,65 +40,53 @@ class ProductDetailScreen extends StatelessWidget {
                     )
                   : Center(
                       child: Text(
-                        'No Image Available',
+                        'Ảnh không có sẵn',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
             ),
             const SizedBox(height: 16),
 
-            // Tên sản phẩm
             Text(
               product.name,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
 
-            // Thương hiệu
             Text(
-              'Brand: ${product.brand}',
+              'Thương hiệu: ${product.brand}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 8),
 
-            // Loại sản phẩm
             Text(
-              'Type: ${product.type}',
+              'Loại sản phẩm: ${product.type}',
               style: const TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 8),
 
-            // Giá sản phẩm
             Text(
-              'Price: \$${product.price.toStringAsFixed(2)}',
+              'Giá: \$${product.price.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
             ),
             const SizedBox(height: 8),
 
             // Số lượng trong kho
             Text(
-              'In Stock: ${product.quantityInStock}',
+              'Số lượng trong kho: ${product.quantityInStock}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 16),
 
             // Mô tả sản phẩm
             Text(
-              'Description:',
+              'Mô tả:',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               product.description,
               style: const TextStyle(fontSize: 16),
-            ),
-
-            const SizedBox(height: 16),
-
-            // ID danh mục
-            Text(
-              'Category ID: ${product.categoryId}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
         ),

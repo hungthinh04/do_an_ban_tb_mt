@@ -14,6 +14,15 @@ class ApiService {
     }
   }
 
+   static Future<List<dynamic>> fetchProductsSTT() async {
+    final response = await http.get(Uri.parse('$baseUrl/products'));
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load products');
+    }
+  }
+
   // Thêm sản phẩm mới
   Future<bool> addProduct(Map<String, dynamic> product) async {
     final response = await http.post(
@@ -31,6 +40,15 @@ class ApiService {
       return json.decode(response.body);
     } else {
       throw Exception('Failed to load customers');
+    }
+  }
+
+  static Future<List<dynamic>> fetchCategories() async {
+    final response = await http.get(Uri.parse('$baseUrl/categories'));
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load categories');
     }
   }
 
