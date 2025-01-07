@@ -71,14 +71,12 @@ class ProductDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // Số lượng trong kho
             Text(
               'In Stock: ${product.quantityInStock}',
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 16),
 
-            // Mô tả sản phẩm
             Text(
               'Description:',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

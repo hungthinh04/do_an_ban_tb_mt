@@ -1,3 +1,4 @@
+import 'package:do_an_ban_mt/screen/search_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainHeader extends StatelessWidget {
@@ -5,13 +6,12 @@ class MainHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.blue, // Màu nền header
+        color: Colors.blue,
       ),
       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Logo và ZaloPay
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -19,16 +19,16 @@ class MainHeader extends StatelessWidget {
                 children: [
                  
                   Image.asset(
-                    'assets/images/banner1.jpg', // Thay bằng logo của bạn
+                    'assets/images/banner1.jpg', 
                     height: 30.0,
                   ),
                   const SizedBox(width: 10,),
-                   Text('HT team',style: TextStyle(color: Colors.white,fontSize: 20 ),),
+                   Text('PhongVuApp - Clone',style: TextStyle(color: Colors.white,fontSize: 20 ),),
                 ],
               ),
               
               Image.asset(
-                'assets/images/banner2.png', // Biểu tượng ZaloPay
+                'assets/images/vn_flag.png', 
                 height: 20.0,
               ),
             ],
@@ -54,7 +54,7 @@ class MainHeader extends StatelessWidget {
                       border: InputBorder.none,
                     ),
                     onTap: () {
-                      //searchPage(),
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const SearchScreen() ));
                     },
                   ),
                 ),
