@@ -1,3 +1,4 @@
+import 'package:do_an_ban_mt/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:do_an_ban_mt/screen/MainScreen.dart';
 import 'package:do_an_ban_mt/screen/cart_screen.dart';
@@ -11,5 +12,6 @@ Map<String, WidgetBuilder> appRoutes = {
   '/categories': (context) => CategoriesSection(),
   '/cart': (context) => CartScreen(),
   '/notifications': (context) => NotificationsScreen(),
-  '/profile': (context) => ProfileScreen(),
+ '/login': (context) => LoginScreen(),
+ '/profile': (context) => ProfileScreen(),
 };

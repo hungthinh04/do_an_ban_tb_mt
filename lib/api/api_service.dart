@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:3000'; // URL của API
+  static const String baseUrl = 'https://dc5a-115-79-202-156.ngrok-free.app'; // URL của API
 
   // Lấy danh sách sản phẩm
   Future<List<dynamic>> fetchProducts() async {
@@ -13,6 +13,24 @@ class ApiService {
       throw Exception('Failed to load products');
     }
   }
+
+  Future<Map<String, dynamic>> fetchProductDetails(String name) async {
+  final response = await http.get(
+    Uri.parse('https://dc5a-115-79-202-156.ngrok-free.app/products?name=$name'),
+  );
+
+  if (response.statusCode == 200) {
+    List products = json.decode(response.body);
+    if (products.isNotEmpty) {
+      return products.first; // Giả sử mỗi `name` là duy nhất.
+    } else {
+      return {}; // Không tìm thấy sản phẩm.
+    }
+  } else {
+    throw Exception('Failed to load product details');
+  }
+}
+
 
    static Future<List<dynamic>> fetchProductsSTT() async {
     final response = await http.get(Uri.parse('$baseUrl/products'));
@@ -42,9 +60,10 @@ class ApiService {
       throw Exception('Failed to load customers');
     }
   }
+  
 
   static Future<List<dynamic>> fetchCategories() async {
-    final response = await http.get(Uri.parse('$baseUrl/categories'));
+    final response = await http.get(Uri.parse('$baseUrl/products'));
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {

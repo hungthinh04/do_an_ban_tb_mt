@@ -1,99 +1,131 @@
+import 'package:do_an_ban_mt/models/cart_provider.dart';
+import 'package:do_an_ban_mt/models/product.dart';
+import 'package:do_an_ban_mt/screen/cart_screen.dart';
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import 'package:provider/provider.dart';
 
-class ProductDetailScreen extends StatelessWidget {
-  final Product product;
+class ProductDetailScreen extends StatefulWidget {
+  final Map<String, dynamic> product;
 
-  const ProductDetailScreen({Key? key, required this.product}) : super(key: key);
+
+  ProductDetailScreen({required this.product});
+
+  @override
+  _ProductDetailScreenState createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  late double quantity;
+
+  @override
+  void initState() {
+    super.initState();
+    quantity = 1;  // Set initial quantity to 1
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(product.name),
+        title: Text(widget.product['name']),
+        backgroundColor: Colors.blue,
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Hình ảnh sản phẩm
-            Container(
-              height: 200,
-              width: double.infinity,
-              child: product.image.isNotEmpty
-                  ? Image.network(
-                      product.image,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Center(
-                          child: Text(
-                            'Image not available',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Text(
-                        'No Image Available',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
+            Center(
+              child: Image.network(
+                widget.product['image_url'],
+                height: 200,
+              ),
             ),
-            const SizedBox(height: 16),
-
-            // Tên sản phẩm
+            SizedBox(height: 16),
             Text(
-              product.name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              widget.product['name'],
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 8),
-
-            // Thương hiệu
+            SizedBox(height: 8),
             Text(
-              'Brand: ${product.brand}',
-              style: const TextStyle(fontSize: 18),
+              'Price: \$${widget.product['price']}',
+              style: TextStyle(fontSize: 18, color: Colors.green),
             ),
-            const SizedBox(height: 8),
-
-            // Loại sản phẩm
+            SizedBox(height: 8),
             Text(
-              'Type: ${product.type}',
-              style: const TextStyle(fontSize: 18),
+              'Stock: ${widget.product['stock']}',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
-            const SizedBox(height: 8),
-
-            // Giá sản phẩm
+            SizedBox(height: 16),
             Text(
-              'Price: \$${product.price.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+              widget.product['description'],
+              style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 16),
+            
+            // Quantity Adjustment
+            Row(
+  mainAxisAlignment: MainAxisAlignment.center, // Căn giữa theo chiều ngang
+  children: [
+    Expanded(
+      child: IconButton(
+        icon: Icon(Icons.remove),
+        onPressed: () {
+          setState(() {
+            if (quantity > 1) {
+              quantity--;
+            }
+          });
+        },
+      ),
+    ),
+    Text(
+      '$quantity',
+      style: TextStyle(fontSize: 20),
+    ),
+    Expanded(
+      child: IconButton(
+        icon: Icon(Icons.add),
+        onPressed: () {
+          setState(() {
+            if (quantity < widget.product['stock']) {
+              quantity++;
+            }
+          });
+        },
+      ),
+    ),
+  ],
+),
+            
+            
+            ElevatedButton(
+  onPressed: () {
+    // Debug: print product data
+    print(widget.product); // Check if the 'id' field exists
 
-            Text(
-              'In Stock: ${product.quantityInStock}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 16),
+    // Add product to cart
+    Provider.of<CartProvider>(context, listen: false).addToCart({
+      'id': widget.product['id'], // Ensure this id is present
+      'name': widget.product['name'],
+      'price': widget.product['price'],
+      'quantity': quantity,
+    });
 
-            Text(
-              'Description:',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              product.description,
-              style: const TextStyle(fontSize: 16),
-            ),
+    // Navigate to CartScreen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CartScreen()),
+    );
+  },
+  child: Text("Add to Cart"),
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.blue,
+    minimumSize: Size(double.infinity, 50),
+  ),
+)
 
-            const SizedBox(height: 16),
 
-            // ID danh mục
-            Text(
-              'Category ID: ${product.categoryId}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
           ],
         ),
       ),

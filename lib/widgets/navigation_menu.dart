@@ -1,6 +1,7 @@
 import 'package:do_an_ban_mt/screen/MainScreen.dart';
 import 'package:do_an_ban_mt/screen/cart_screen.dart';
 import 'package:do_an_ban_mt/screen/categories_section.dart';
+import 'package:do_an_ban_mt/screen/login_screen.dart';
 import 'package:do_an_ban_mt/screen/notification_screen.dart';
 import 'package:do_an_ban_mt/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,8 @@ class _NavigationMenuState extends State<NavigationMenu> {
       case 3:
         return NotificationsScreen();
       case 4:
-        return ProfileScreen();
+  return ProfileScreen();
+
       default:
         return MainScreen();
     }
@@ -85,9 +87,36 @@ class _NavigationMenuState extends State<NavigationMenu> {
           label: 'Giỏ hàng',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Thông báo',
+  icon: Stack(
+    children: [
+      Icon(Icons.notifications),
+      Positioned(
+        right: 0,
+        child: Container(
+          padding: EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          constraints: BoxConstraints(
+            minWidth: 16,
+            minHeight: 16,
+          ),
+          child: Text(
+            '20', // Số lượng thông báo
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ),
+      ),
+    ],
+  ),
+  label: 'Thông báo',
+),
+
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Cá nhân',

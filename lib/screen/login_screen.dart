@@ -1,8 +1,59 @@
-import 'package:do_an_ban_mt/screen/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+import 'register_screen.dart'; // Import the RegisterScreen
+
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _login() async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://dc5a-115-79-202-156.ngrok-free.app/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'username': username, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print('Response Data: $data'); // Log data
+
+        if (data != null && data['success'] == true && data['user'] != null) {
+          final user = data['user'];
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await prefs.setString('username', user['username']);
+          await prefs.setString('email', user['email']);
+
+          Navigator.pushReplacementNamed(context, '/main', arguments: user);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Sai tài khoản hoặc mật khẩu')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng nhập thất bại')),
+        );
+      }
+    } catch (e) {
+      print('Error: $e'); // Log error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đăng nhập thất bại')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,6 +61,7 @@ class LoginScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Đăng Nhập'),
         backgroundColor: Colors.green,
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -19,110 +71,49 @@ class LoginScreen extends StatelessWidget {
           children: [
             const Text(
               'Đăng Nhập',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
             TextField(
+              controller: _usernameController,
               decoration: InputDecoration(
-                labelText: 'Nhập Email',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                prefixIcon: const Icon(Icons.email),
+                labelText: 'Nhập Tên Đăng Nhập',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                prefixIcon: const Icon(Icons.person),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             TextField(
-              
+              controller: _passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Nhập Mật Khẩu',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 prefixIcon: const Icon(Icons.lock),
               ),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: _login,
               style: ElevatedButton.styleFrom(
-              
                 backgroundColor: Colors.green,
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
               ),
-              child: const Text(
-                'Đăng Nhập',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () {},
-                  child: const Text(
-                    'Quên mật khẩu?',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
- const SizedBox(width: 10),
-                TextButton(
-              onPressed: () {},
-              child: const Text(
-                'Khôi phục tại đây',
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
-              ],
-            ),
-         
-            
-            const SizedBox(height: 10),
-            Row(
-              children: const [
-                Expanded(child: Divider()),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text('HOẶC'),
-                ),
-                Expanded(child: Divider()),
-              ],
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.g_mobiledata),
-              label: const Text(
-                'Đăng Nhập với Google',
-                style: TextStyle(fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 14.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  side: const BorderSide(color: Colors.black),
-                ),
-              ),
+              child: const Text('Đăng Nhập', style: TextStyle(fontSize: 18)),
             ),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Bạn mới sử dụng ứng dụng?'),
+                const Text('Bạn chưa có tài khoản?'),
                 TextButton(
                   onPressed: () {
-                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>RegisterScreen() ));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterScreen()),
+                    );
                   },
                   child: const Text(
                     'Đăng Ký',

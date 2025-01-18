@@ -1,3 +1,4 @@
+import 'package:do_an_ban_mt/screen/MainScreen.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -8,31 +9,30 @@ class SearchScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen()));
+          },
+        ),
         title: Row(
           children: [
-           
             Expanded(
-  child: TextField(
-    decoration: InputDecoration(
-      hintText: 'Tìm kiếm',
-      hintStyle: const TextStyle(color: Colors.grey),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        // borderSide: const BorderSide(
-        //   color: Colors.blue, // Màu viền khi TextField được focus
-        //   width: 1.5,
-        // ),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-    ),
-    style: const TextStyle(color: Colors.grey),
-  ),
-),
-
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Tìm kiếm',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
           ],
         ),
       ),
@@ -41,7 +41,6 @@ class SearchScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Tìm kiếm gần đây
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -67,7 +66,6 @@ class SearchScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            // Từ khóa phổ biến
             const Text(
               'TỪ KHÓA PHỔ BIẾN',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
