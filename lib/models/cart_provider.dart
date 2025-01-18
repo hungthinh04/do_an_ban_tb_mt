@@ -6,44 +6,35 @@ class CartProvider with ChangeNotifier {
 
   List<Map<String, dynamic>> get cartItems => _cartItems;
   List<Map<String, dynamic>> get purchasedOrders => _purchasedOrders;
+void addToCart(Map<String, dynamic> product) {
+  _cartItems.add({...product, 'quantity': 1, 'timestamp': DateTime.now().millisecondsSinceEpoch});
+  notifyListeners();
+}
 
-  // Thêm sản phẩm vào giỏ
-  void addToCart(Map<String, dynamic> product) {
-    // Kiểm tra xem sản phẩm đã có trong giỏ chưa, nếu có thì tăng số lượng
-    final existingProductIndex = _cartItems.indexWhere((item) => item['id'] == product['id']);
-    if (existingProductIndex >= 0) {
-      // Nếu sản phẩm đã có, tăng số lượng lên 1
-      _cartItems[existingProductIndex]['quantity']++;
-    } else {
-      // Nếu chưa có trong giỏ, thêm mới vào giỏ hàng
-      _cartItems.add({...product, 'quantity': 1});
-    }
-    notifyListeners(); // Cập nhật lại giao diện
-  }
 
-  // Giảm số lượng sản phẩm trong giỏ
-  void decreaseQuantity(String itemId) {
-    final itemIndex = _cartItems.indexWhere((item) => item['id'] == itemId);
-    if (itemIndex != -1 && _cartItems[itemIndex]['quantity'] > 1) {
-      _cartItems[itemIndex]['quantity']--;
-      notifyListeners();
-    }
+ void decreaseQuantity(int index) {
+  if (index >= 0 && index < _cartItems.length && _cartItems[index]['quantity'] > 1) {
+    _cartItems[index]['quantity']--;
+    notifyListeners();
   }
+}
 
-  // Tăng số lượng sản phẩm trong giỏ
-  void increaseQuantity(String itemId) {
-    final itemIndex = _cartItems.indexWhere((item) => item['id'] == itemId);
-    if (itemIndex != -1) {
-      _cartItems[itemIndex]['quantity']++;
-      notifyListeners();
-    }
+void increaseQuantity(int index) {
+  if (index >= 0 && index < _cartItems.length) {
+    _cartItems[index]['quantity']++;
+    notifyListeners();
   }
+}
 
-  // Xóa sản phẩm khỏi giỏ
-  void removeItem(String id) {
-    _cartItems.removeWhere((item) => item['id'] == id);
-    notifyListeners(); // Cập nhật lại giao diện
+
+void removeItemByIndex(int index) {
+  if (index >= 0 && index < _cartItems.length) {
+    _cartItems.removeAt(index); // Xóa sản phẩm tại chỉ số
+    notifyListeners();
   }
+}
+
+
 
   // Xóa tất cả sản phẩm trong giỏ
   void clearCart() {

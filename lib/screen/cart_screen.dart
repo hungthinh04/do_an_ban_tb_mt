@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:do_an_ban_mt/models/cart_provider.dart';
 import 'package:do_an_ban_mt/screen/MainScreen.dart';
 import 'package:do_an_ban_mt/screen/management_order.dart';
 import 'package:do_an_ban_mt/widgets/navigation_menu.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -11,32 +11,64 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  String selectedLetter = 'Tất cả'; // Giá trị mặc định hiển thị tất cả
+
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
     final cartItems = cartProvider.cartItems;
+
+    // Lọc sản phẩm dựa trên ký tự đầu tiên của tên
+    final filteredItems = selectedLetter == 'Tất cả'
+        ? cartItems
+        : cartItems.where((item) {
+            return item['name']
+                .toString()
+                .toLowerCase()
+                .startsWith(selectedLetter.toLowerCase());
+          }).toList();
+
+    // Tính tổng tiền
+    double totalCartPrice = filteredItems.fold(0.0, (sum, item) {
+      return sum + (item['price'].toDouble() * item['quantity']);
+    });
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Giỏ Hàng"),
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () {
-              // Mở màn hình lọc đơn hàng
-            },
-          ),
+          DropdownButton<String>(
+  value: selectedLetter,
+  items: [
+    DropdownMenuItem(
+      value: 'Tất cả',
+      child: Text('Tất cả'),
+    ),
+    ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((char) {
+      return DropdownMenuItem(
+        value: char,
+        child: Text(char),
+      );
+    }).toList(),
+  ],
+  onChanged: (value) {
+    setState(() {
+      selectedLetter = value!;
+    });
+  },
+),
+
         ],
       ),
-      body: cartItems.isEmpty
+      body: filteredItems.isEmpty
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset('assets/images/cart_buying.png', height: 150),
                   SizedBox(height: 16.0),
-                  Text("Bạn chưa có sản phẩm nào trong giỏ", style: TextStyle(fontSize: 16)),
+                  Text("Không có sản phẩm nào phù hợp", style: TextStyle(fontSize: 16)),
                   SizedBox(height: 16.0),
                   ElevatedButton(
                     onPressed: () {
@@ -51,9 +83,9 @@ class _CartScreenState extends State<CartScreen> {
               ),
             )
           : ListView.builder(
-              itemCount: cartItems.length,
+              itemCount: filteredItems.length,
               itemBuilder: (context, index) {
-                final item = cartItems[index];
+                final item = filteredItems[index];
                 double price = item['price'].toDouble();
                 double totalPrice = price * item['quantity']; // Tính tổng giá cho mỗi sản phẩm
 
@@ -62,38 +94,33 @@ class _CartScreenState extends State<CartScreen> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Price: \$${price.toStringAsFixed(2)}"),
-                      Text("Total: \$${totalPrice.toStringAsFixed(2)}"),
+                      Text("Price: ${price.toStringAsFixed(2)} VNĐ"),
+                      Text("Total: ${totalPrice.toStringAsFixed(2)} VNĐ"),
                     ],
                   ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: () {
-                          setState(() {
-                            cartProvider.decreaseQuantity(item['id']); // Giảm số lượng
-                          });
-                        },
-                      ),
-                      Text("Quantity: ${item['quantity']}"),
-                      IconButton(
                         icon: Icon(Icons.add),
                         onPressed: () {
-                          setState(() {
-                            cartProvider.increaseQuantity(item['id']); // Tăng số lượng
-                          });
+                          cartProvider.increaseQuantity(index);
                         },
                       ),
+                      Text(" ${item['quantity']} "),
                       IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: Icon(Icons.remove),
                         onPressed: () {
-                          setState(() {
-                            cartProvider.removeItem(item['id']); // Xóa sản phẩm
-                          });
+                          cartProvider.decreaseQuantity(index);
                         },
                       ),
+IconButton(
+  icon: Icon(Icons.delete),
+  onPressed: () {
+    cartProvider.removeItemByIndex(index);
+  },
+),
+
                     ],
                   ),
                 );
@@ -104,6 +131,19 @@ class _CartScreenState extends State<CartScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Tổng tiền:",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "${totalCartPrice.toStringAsFixed(2)} VNĐ",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                ),
+              ],
+            ),
             SizedBox(height: 8),
             Row(
               children: [

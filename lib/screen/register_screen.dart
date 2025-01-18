@@ -7,34 +7,59 @@ class RegisterScreen extends StatelessWidget {
 
   Future<void> registerUser(BuildContext context, String username, String password, String email, String phone, String address, String role) async {
     const apiUrl = 'https://dc5a-115-79-202-156.ngrok-free.app/register';
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'username': username,
-        'password': password,
-        'email': email,
-        'phone': phone,
-        'address': address,
-        'role': role,
-      }),
-    );
+    
+    if (username.isEmpty || password.isEmpty || email.isEmpty || phone.isEmpty || address.isEmpty || role.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng điền đầy đủ thông tin.')),
+      );
+      return;
+    }
 
-    if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
-      if (responseBody['success']) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Đăng ký thành công!')),
-        );
-        Navigator.pop(context);
+    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Email không hợp lệ.')),
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'username': username,
+          'password': password,
+          'email': email,
+          'phone': phone,
+          'address': address,
+          'role': role,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          // Đăng ký thành công
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Đăng ký thành công!')),
+          );
+          Navigator.pop(context);
+        } else {
+          // Hiển thị lỗi từ API
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Lỗi: ${responseBody['message']}')),
+          );
+        }
       } else {
+        // Lỗi không xác định từ server
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Lỗi: ${responseBody['message']}')),
+          const SnackBar(content: Text('Đăng ký thất bại, vui lòng thử lại.')),
         );
       }
-    } else {
+    } catch (e) {
+      // Lỗi khi kết nối với server
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đăng ký thất bại, vui lòng thử lại.')),
+        SnackBar(content: Text('Lỗi hệ thống: $e')),
       );
     }
   }

@@ -33,7 +33,7 @@ class ProductDetail extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'Price: \$${product['price']}',
+              'Price: ${product['price']} VNĐ',
               style: TextStyle(fontSize: 18, color: Colors.green),
             ),
             SizedBox(height: 8),

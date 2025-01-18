@@ -131,7 +131,7 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                               SizedBox(height: 4.0),
                               Text(
-                                'Giá: \$${product['price']}',
+                                'Giá: ${product['price']} VNĐ',
                                 style: TextStyle(fontSize: 14, color: Colors.grey),
                               ),
                             ],
